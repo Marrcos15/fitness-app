@@ -82,7 +82,7 @@ fitness-app/
 ### 1️⃣ Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu_usuario/fitness-app.git
+git clone https://github.com/Marrcos15/fitness-app.git
 cd fitness-app
 ```
 
