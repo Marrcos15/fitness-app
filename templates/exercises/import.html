@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Importar ejercicios desde CSV{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="h4 mb-3">
+        <i class="bi bi-upload"></i> Importar ejercicios desde CSV
+      </h2>
+      <p class="text-muted small">
+        El archivo CSV debe contener las columnas:
+        <code>name,description,equipment,difficulty,muscle_groups</code>.
+      </p>
+
+      <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.csv_file.label(class="form-label") }}
+          {{ form.csv_file(class="form-control") }}
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          {{ form.submit(class="btn btn-primary") }}
+          <a href="{{ url_for('exercise.view_exercises') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+          </a>
+        </div>
+      </form>
+
+      <hr>
+      <div class="text-end">
+        <a href="{{ url_for('static', filename='examples/exercises_template.csv') }}"
+           class="btn btn-sm btn-outline-info">
+          <i class="bi bi-file-earmark-arrow-down"></i> Descargar plantilla CSV
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

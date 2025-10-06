@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Rutinas - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Rutinas</h1>
+
+        {% if current_user.is_admin %}
+        <div>
+            <a href="{{ url_for('routine.import_routines') }}" class="btn btn-outline-info me-2">
+                <i class="bi bi-upload"></i> Importar desde CSV
+            </a>
+            <a href="{{ url_for('routine.add_routine') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Añadir nueva rutina
+            </a>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if routines %}
+    <div class="accordion" id="accordionRoutines">
+        {% for routine in routines %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-{{ routine.routine_id }}">
+                <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" 
+                    type="button"
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#collapse-{{ routine.routine_id }}"
+                    aria-expanded="{{ 'true' if loop.first else 'false' }}"
+                    aria-controls="collapse-{{ routine.routine_id }}">
+                    📅 Rutina {{ routine.month }}/{{ routine.year }}
+                </button>
+            </h2>
+
+            <div id="collapse-{{ routine.routine_id }}" 
+                class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+                aria-labelledby="heading-{{ routine.routine_id }}" 
+                data-bs-parent="#accordionRoutines">
+                <div class="accordion-body">
+                    {% for day in routine.days %}
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ day.name }}</h5>
+                            {% if day.exercises %}
+                                <ul class="list-group list-group-flush">
+                                {% for exercise in day.exercises %}
+                                    <li class="list-group-item">{{ exercise.name }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">No hay ejercicios asignados a este día.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+                {% if current_user.is_admin %}
+                <div class="d-flex justify-content-end mt-3">
+                    <a href="{{ url_for('routine.edit_routine', routine_id=routine.routine_id) }}" 
+                        class="btn btn-outline-info">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No hay rutinas creadas aún.</p>
+    {% endif %}
+</div>
+{% endblock %}

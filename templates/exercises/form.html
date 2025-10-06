@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Modificar' if edit else 'Añadir' }} ejercicio - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">
+                        {{ 'Modificar ejercicio' if edit else 'Añadir nuevo ejercicio' }}
+                    </h3>
+
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            {{ form.name.label(class="form-label") }}
+                            {{ form.name(class="form-control", placeholder="Ej: Press banca") }}
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows=3, placeholder="Describe el ejercicio") }}
+                        </div>
+
+                        <!-- Equipo -->
+                        <div class="mb-3">
+                            {{ form.equipment_id.label(class="form-label") }}
+                            {{ form.equipment_id(class="form-select") }}
+                        </div>
+
+                        <!-- Dificultad -->
+                        <div class="mb-3">
+                            {{ form.difficulty_id.label(class="form-label") }}
+                            {{ form.difficulty_id(class="form-select") }}
+                        </div>
+
+                        <!-- Tiempo estimado -->
+                        <div class="mb-3">
+                            {{ form.estimated_time_min.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.estimated_time_min(class="form-control", placeholder="0") }}
+                                <span class="input-group-text">min</span>
+                            </div>
+                        </div>
+
+                        <!-- Grupos musculares -->
+                        <div class="mb-3">
+                            {{ form.muscle_groups.label(class="form-label") }}
+                            {{ form.muscle_groups(class="form-select", multiple=true) }}
+                            <div class="form-text">Mantén pulsado Ctrl (Windows) o Cmd (Mac) para seleccionar varios</div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('exercise.view_exercises') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> {{ 'Editar' if edit else form.submit.label.text }}
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

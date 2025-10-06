@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Selecciona día - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Selecciona el día de la rutina</h2>
+
+  <div class="row g-3">
+    {% for day in routine_days %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <form method="post" class="d-grid">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="day_id" value="{{ day.day_id }}">
+          <button type="submit" class="btn btn-outline-primary btn-lg shadow-sm">
+            <i class="bi bi-calendar-event me-1"></i> {{ day.name }}
+          </button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

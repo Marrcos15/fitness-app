@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Importar rutinas desde CSV{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h2 class="h4 mb-3">
+        <i class="bi bi-upload"></i> Importar rutinas desde CSV
+      </h2>
+
+      <p class="text-muted small mb-4">
+        El archivo CSV debe contener las columnas:
+        <code>month,year,day_name,exercise_names</code>.
+        <br>Los ejercicios deben ir separados por <code>|</code>.
+      </p>
+
+      <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          {{ form.csv_file.label(class="form-label") }}
+          {{ form.csv_file(class="form-control") }}
+        </div>
+        <div class="d-flex justify-content-between">
+          {{ form.submit(class="btn btn-primary") }}
+          <a href="{{ url_for('routine.view_routines') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+          </a>
+        </div>
+      </form>
+
+      <hr>
+      <div class="text-end">
+        <a href="{{ url_for('static', filename='examples/routines_template.csv') }}"
+           class="btn btn-sm btn-outline-info">
+          <i class="bi bi-file-earmark-arrow-down"></i> Descargar plantilla CSV
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

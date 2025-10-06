@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Usuarios registrados{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h1 class="h3 mb-2 mb-md-0">
+            <i class="bi bi-people me-2"></i> Usuarios registrados
+        </h1>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Volver al dashboard
+        </a>
+    </div>
+
+    {% if users %}
+    <!-- Vista de tabla (solo visible en pantallas medianas en adelante) -->
+    <div class="table-responsive d-none d-md-block">
+        <table class="table table-hover table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Registrado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_admin %}
+                        <span class="badge bg-success">Sí</span>
+                        {% else %}
+                        <span class="badge bg-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('user.user_profile', user_id=user.user_id) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{{ url_for('user.edit_profile', user_id=user.user_id) }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        {% if current_user.user_id != user.user_id %}
+                        <a href="#"
+                           class="btn btn-sm btn-outline-danger"
+                           data-bs-toggle="modal"
+                           data-bs-target="#confirmDeleteModal"
+                           data-bs-url="{{ url_for('user.delete_user', user_id=user.user_id) }}"
+                           data-bs-name="el usuario '{{ user.username }}'">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Vista en móvil (cards, solo visible en sm) -->
+    <div class="d-md-none">
+        <div class="row g-3">
+            {% for user in users %}
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <p class="card-text mb-1"><strong>Email:</strong> {{ user.email }}</p>
+                        <p class="card-text mb-1">
+                            <strong>Admin:</strong> 
+                            {% if user.is_admin %}
+                            <span class="badge bg-success">Sí</span>
+                            {% else %}
+                            <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </p>
+                        <p class="card-text"><strong>Registrado:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="{{ url_for('user.user_profile', user_id=user.user_id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Ver
+                            </a>
+                            <a href="{{ url_for('user.edit_profile', user_id=user.user_id) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            {% if current_user.user_id != user.user_id %}
+                            <a href="#"
+                               class="btn btn-sm btn-outline-danger"
+                               data-bs-toggle="modal"
+                               data-bs-target="#confirmDeleteModal"
+                               data-bs-url="{{ url_for('user.delete_user', user_id=user.user_id) }}"
+                               data-bs-name="el usuario '{{ user.username }}'">
+                                <i class="bi bi-trash"></i> Borrar
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i> No hay usuarios registrados.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

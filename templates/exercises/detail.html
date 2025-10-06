@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}{{ exercise.name }} - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title mb-3">{{ exercise.name }}</h2>
+          <p class="card-text"><strong>Descripción:</strong> {{ exercise.description }}</p>
+          <p class="card-text">
+            <strong>Tiempo estimado:</strong> 
+            {{ exercise.estimated_time_min }} min
+          </p>
+          <p class="card-text">
+            <strong>Dificultad:</strong> 
+            <span class="badge bg-info">
+              {{ exercise.difficulty.name if exercise.difficulty else 'N/A' }}
+            </span>
+          </p>
+          <p class="card-text">
+            <strong>Equipo:</strong> 
+            <span class="badge bg-secondary">
+              {{ exercise.equipment.name if exercise.equipment else 'Sin equipo' }}
+            </span>
+          </p>
+          <p class="card-text">
+            <strong>Grupos musculares:</strong>
+            {% if exercise.muscle_groups %}
+              {% for muscle in exercise.muscle_groups %}
+                <span class="badge bg-success">{{ muscle.name }}</span>
+              {% endfor %}
+            {% else %}
+              <span class="text-muted">Ninguno</span>
+            {% endif %}
+          </p>
+
+          <div class="d-flex justify-content-between mt-4">
+            
+            <!-- Botón borrar -->
+            {% if current_user.is_admin %}
+            <a href="#"
+              class="btn btn-sm btn-outline-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#confirmDeleteModal"
+              data-bs-url="{{ url_for('exercise.delete_exercise', exercise_id=exercise.exercise_id) }}"
+              data-bs-name="el ejercicio '{{ exercise.name }}'">
+              <i class="bi bi-trash"></i> Borrar
+            </a>
+            {% endif %}
+
+            <!-- Botones editar / volver -->
+            <div>
+              {% if current_user.is_admin %}
+              <a href="{{ url_for('exercise.edit_exercise', exercise_id=exercise.exercise_id) }}" class="btn btn-primary me-2">
+                <i class="bi bi-pencil"></i> Editar
+              </a>
+              {% endif %}
+              <a href="{{ url_for('exercise.view_exercises') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

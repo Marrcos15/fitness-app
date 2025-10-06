@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Registrar ejercicios - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Registrar ejercicios para: <span class="text-primary">{{ routine_day.name }}</span></h2>
+    <!-- Fecha -->
+    <form method="POST">
+        <div class="mb-4">
+            <label for="date" class="form-label">Fecha:</label>
+            <input type="date" name="date" id="date"
+                class="form-control {% if errors and errors.get('_date') %}is-invalid{% endif %}"
+                required value="{{ request.form.date or '' }}">
+            
+            {% if errors and errors.get('_date') %}
+                <div class="invalid-feedback">{{ errors.get('_date') }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Lista de ejercicios -->
+        <div class="row g-4">
+            {% for exercise in exercises %}
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ exercise.name }}</h5>
+
+                        <div class="mb-3">
+                            <label for="sets_{{ exercise.exercise_id }}" class="form-label">Series</label>
+                            <input type="number" name="sets_{{ exercise.exercise_id }}" id="sets_{{ exercise.exercise_id }}"
+                                    class="form-control {% if errors and errors.get(exercise.exercise_id) and errors[exercise.exercise_id].get('sets') %}is-invalid{% endif %}"
+                                    min="1" required value="{{ request.form.get('sets_' ~ exercise.exercise_id, '') }}">
+                            {% if errors and errors.get(exercise.exercise_id) and errors[exercise.exercise_id].get('sets') %}
+                                <div class="invalid-feedback">{{ errors[exercise.exercise_id].get('sets') }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reps_{{ exercise.exercise_id }}" class="form-label">Repeticiones</label>
+                            <input type="number" name="reps_{{ exercise.exercise_id }}" id="reps_{{ exercise.exercise_id }}"
+                                    class="form-control {% if errors and errors.get(exercise.exercise_id) and errors[exercise.exercise_id].get('reps') %}is-invalid{% endif %}"
+                                    min="1" required value="{{ request.form.get('reps_' ~ exercise.exercise_id, '') }}">
+                            {% if errors and errors.get(exercise.exercise_id) and errors[exercise.exercise_id].get('reps') %}
+                                <div class="invalid-feedback">{{ errors[exercise.exercise_id].get('reps') }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="weight_{{ exercise.exercise_id }}" class="form-label">Peso (kg)</label>
+                            <div class="input-group">
+                                <input type="number" name="weight_{{ exercise.exercise_id }}" id="weight_{{ exercise.exercise_id }}"
+                                    class="form-control {% if errors and errors.get(exercise.exercise_id) and errors[exercise.exercise_id].get('weight') %}is-invalid{% endif %}"
+                                    min="0" step="0.1" value="{{ request.form.get('weight_' ~ exercise.exercise_id, '') }}">
+                                <span class="input-group-text">kg</span>
+                                {% if errors and errors.get(exercise.exercise_id) and errors[exercise.exercise_id].get('weight') %}
+                                <div class="invalid-feedback d-block">{{ errors[exercise.exercise_id].get('weight') }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes_{{ exercise.exercise_id }}" class="form-label">Notas</label>
+                            <textarea name="notes_{{ exercise.exercise_id }}" id="notes_{{ exercise.exercise_id }}" class="form-control" rows="2">{{ request.form.get('notes_' ~ exercise.exercise_id, '') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Botón guardar -->
+        <div class="d-flex justify-content-end mt-4">
+            <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-2">
+                <i class="bi bi-arrow-left"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Guardar registros
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

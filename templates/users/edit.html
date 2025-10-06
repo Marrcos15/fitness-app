@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Editar Perfil{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3">Editar Perfil</h1>
+                    <a href="{{ url_for('user.user_profile') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Volver al perfil
+                    </a>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+
+                            <!-- Nombre de usuario -->
+                            <div class="mb-3">
+                                {{ form.username.label(class="form-label") }}
+                                {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Tu nombre de usuario") }}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="tucorreo@ejemplo.com") }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Nueva contraseña -->
+                            <div class="mb-3">
+                                {{ form.password.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), id="passwordField", placeholder="••••••••") }}
+                                    <button type="button" class="btn btn-outline-secondary toggle-password" data-target="#passwordField">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                    {% for error in form.password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Deja en blanco si no deseas cambiar la contraseña.
+                                </div>
+                            </div>
+
+                        <!-- Repetir contraseña -->
+                        <div class="mb-3">
+                            {{ form.password2.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else ""), id="passwordField2", placeholder="••••••••") }}
+                            </div>
+                            {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password2.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Checkbox admin: solo visible si el editor es admin -->
+                        {% if current_user.is_admin %}
+                            <div class="form-check mb-3">
+                                {{ form.is_admin(class="form-check-input") }}
+                                {{ form.is_admin.label(class="form-check-label") }}
+                            </div>
+                        {% endif %}
+
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('user.user_profile') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

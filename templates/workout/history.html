@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Historial de {{ target_user.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Historial de {{ target_user.username }}</h1>
+    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm">&larr; Volver</a>
+</div>
+
+<!-- Filtro de fechas -->
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label for="start_date" class="form-label">Desde</label>
+        <input type="date" id="start_date" name="start_date" value="{{ start_date or '' }}" class="form-control">
+    </div>
+    <div class="col-md-4">
+        <label for="end_date" class="form-label">Hasta</label>
+        <input type="date" id="end_date" name="end_date" value="{{ end_date or '' }}" class="form-control">
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">
+            <i class="bi bi-filter"></i> Filtrar
+        </button>
+        <a href="{{ url_for('workout_log.history', user_id=target_user.user_id if target_user.user_id != current_user.user_id else None) }}"
+            class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle"></i> Limpiar
+        </a>
+    </div>
+</form>
+<!-- Resumen -->
+<div class="mb-4">
+    <div class="alert alert-secondary">
+        {% if start_date or end_date %}
+            Se encontraron <strong>{{ logs|length }}</strong> entrenamientos
+            {% if start_date %} desde <strong>{{ start_date }}</strong>{% endif %}
+            {% if end_date %} hasta <strong>{{ end_date }}</strong>{% endif %}.
+        {% else %}
+            Se encontraron <strong>{{ logs|length }}</strong> entrenamientos en total.
+        {% endif %}
+    </div>
+</div>
+{% if logs %}
+    <div class="row">
+        {% for log in logs %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ log.exercise.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><strong>Fecha:</strong> {{ log.date.strftime('%d/%m/%Y') }}</li>
+                        <li><strong>Sets:</strong> {{ log.sets or '–' }}</li>
+                        <li><strong>Reps:</strong> {{ log.reps or '–' }}</li>
+                        <li><strong>Peso:</strong> {{ '%g' % log.weight if log.weight else '–' }} kg</li>
+                    </ul>
+                    
+                    {% if log.notes %}
+                        <p class="mt-2 mb-0"><strong>Notas:</strong> {{ log.notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> No se encontraron registros de entrenamientos
+        {% if start_date or end_date %} en el rango seleccionado{% endif %}.
+    </div>
+{% endif %}
+{% endblock %}

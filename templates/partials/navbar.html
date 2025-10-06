@@ -1,0 +1,77 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">Gym Routine App</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+            {% if current_user.is_authenticated %}
+                <li class="nav-item me-lg-3">
+                    <a class="nav-link {{ is_active('user') }}" href="{{ url_for('user.user_profile') }}">
+                        <span class="me-1">👤</span> Perfil
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown me-lg-3">
+                    <a class="nav-link dropdown-toggle {{ is_active('routine','routines','exercise','workout_logs') }}"
+                    href="#" id="navEntrenamiento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Entrenamiento
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navEntrenamiento">
+                        <li>
+                            <a class="dropdown-item {{ is_active('routine','routines') }}"
+                            href="{{ url_for('routine.view_routines') }}">
+                            Rutinas
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ is_active('exercise') }}"
+                            href="{{ url_for('exercise.view_exercises') }}">
+                            Ejercicios
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item {{ is_active('workout_logs') }}"
+                            href="{{ url_for('workout_log.history') }}">
+                            Historial
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+
+                {% if current_user.is_admin %}
+                <li class="nav-item dropdown me-lg-3">
+                    <a class="nav-link dropdown-toggle" href="#" id="navAdmin" role="button" 
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                        Administración
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navAdmin">
+                        <li><a class="dropdown-item" href="{{ url_for('user.list_users') }}">
+                            <i class="bi bi-people"></i> Usuarios
+                        </a></li>
+                    </ul>
+                </li>
+                {% endif %}
+        
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+                </li>
+
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link {{ is_active('auth.login') }}" href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="nav-link {{ is_active('auth.register') }}" href="{{ url_for('auth.register') }}">Registrarse</a>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

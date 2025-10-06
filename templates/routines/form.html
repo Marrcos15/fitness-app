@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Modificar' if edit else 'Añadir' }} rutina - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">
+                        {{ 'Modificar rutina' if edit else 'Añadir nueva rutina' }}
+                    </h3>
+
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <!-- Mes -->
+                        <div class="mb-3">
+                            {{ form.month.label(class="form-label") }}
+                            {{ form.month(class="form-select") }}
+                        </div>
+
+                        <!-- Año -->
+                        <div class="mb-3">
+                            {{ form.year.label(class="form-label") }}
+                            {{ form.year(class="form-control", placeholder="Ej: 2025") }}
+                        </div>
+
+                        <!-- Ejercicios Día 1 -->
+                        <div class="mb-3">
+                            {{ form.exercises1.label(class="form-label") }}
+                            {{ form.exercises1(class="form-select select-exercises", multiple=true) }}
+                            <div class="form-text">Mantén pulsado Ctrl (Windows) o Cmd (Mac) para seleccionar varios</div>
+                        </div>
+
+                        <!-- Ejercicios Día 2 -->
+                        <div class="mb-3">
+                            {{ form.exercises2.label(class="form-label") }}
+                            {{ form.exercises2(class="form-select select-exercises", multiple=true) }}
+                        </div>
+
+                        <!-- Ejercicios Día 3 -->
+                        <div class="mb-3">
+                            {{ form.exercises3.label(class="form-label") }}
+                            {{ form.exercises3(class="form-select select-exercises", multiple=true) }}
+                        </div>
+
+                        <!-- Ejercicios Día 4 -->
+                        <div class="mb-3">
+                            {{ form.exercises4.label(class="form-label") }}
+                            {{ form.exercises4(class="form-select select-exercises", multiple=true) }}
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('routine.view_routines') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> {{ form.submit.label.text if form.submit.label.text else 'Guardar' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('.select-exercises').select2({
+            placeholder: "Busca ejercicios...",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+{% endblock %}

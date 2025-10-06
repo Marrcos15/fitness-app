@@ -1,0 +1,63 @@
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-calendar3"></i> Entrenamientos en {{ month }} / {{ year }}
+        </h5>
+        <div>
+            <a href="{{ url_for('main.index', month=month-1 if month > 1 else 12, year=year if month > 1 else year-1) }}" 
+                class="btn btn-sm btn-outline-secondary">&laquo; Anterior</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline-primary mx-1">Hoy</a>
+            <a href="{{ url_for('main.index', month=month+1 if month < 12 else 1, year=year if month < 12 else year+1) }}" 
+                class="btn btn-sm btn-outline-secondary">Siguiente &raquo;</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Lun</th>
+                        <th>Mar</th>
+                        <th>Mié</th>
+                        <th>Jue</th>
+                        <th>Vie</th>
+                        <th>Sáb</th>
+                        <th>Dom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for week in cal %}
+                    <tr>
+                        {% for day in week %}
+                        <td style="width: 14%;">
+                            {% if day == 0 %}
+                                <span class="text-muted">&nbsp;</span>
+                            {% else %}
+                                {% set is_today = (year == today.year and month == today.month and day == today.day) %}
+                                {% set has_workout = day in workout_days %}
+
+                                {% if has_workout %}
+                                    <a href="{{ url_for('workout_log.view_day', date_str='%04d-%02d-%02d'|format(year, month, day)) }}" 
+                                        class="text-decoration-none">
+                                        <span class="badge bg-success rounded-circle" style="width: 36px; height: 36px; line-height: 24px;">
+                                            {{ day }}
+                                        </span>
+                                    </a>
+                                {% elif is_today %}
+                                    <span class="badge bg-warning text-dark rounded-circle" style="width: 36px; height: 36px; line-height: 24px;">
+                                        {{ day }}
+                                    </span>
+                                {% else %}
+                                    <span>{{ day }}</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

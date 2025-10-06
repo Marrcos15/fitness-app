@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Mi Perfil - {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Mi Perfil</h1>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Volver al dashboard
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Información personal -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i> Información personal</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="bi bi-person-fill me-2 text-muted"></i>
+                            <strong>Nombre:</strong> {{ user.username }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-envelope-fill me-2 text-muted"></i>
+                            <strong>Email:</strong> {{ user.email }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-calendar-check me-2 text-muted"></i>
+                            <strong>Miembro desde:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{{ url_for('user.edit_profile', user_id=user.user_id) }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil-square"></i> Editar perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actividad reciente -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-activity me-2"></i> Actividad reciente</h5>
+                </div>
+                <div class="card-body">
+                    {% set recent_logs = user.logs | sort(attribute='date', reverse=True) | list %}
+                    {% if recent_logs %}
+                        <ul class="list-group list-group-flush">
+                            {% for log in recent_logs[:5] %}
+                            <li class="list-group-item">
+                                <strong>{{ log.exercise.name }}</strong><br>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event me-1"></i> {{ log.date.strftime('%d/%m/%Y') }} · 
+                                    <i class="bi bi-repeat me-1"></i> {{ log.sets or '–' }}×{{ log.reps or '–' }}
+                                    {% if log.weight %}
+                                        · <i class="bi bi-barbell me-1"></i> {{ '%g' % log.weight }} kg
+                                    {% endif %}
+                                </small>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{{ url_for('workout_log.history', user_id=user.user_id) }}" class="btn btn-outline-success btn-sm mt-2">
+                            <i class="bi bi-clock-history"></i> Ver todo el historial
+                        </a>
+                    {% else %}
+                        <p class="text-muted">Aún no has registrado ningún entrenamiento.</p>
+                        <a href="{{ url_for('workout_log.select_day') }}" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle"></i> Registrar primer entrenamiento
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

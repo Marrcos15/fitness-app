@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Ejercicios - Gym Routine App{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Ejercicios</h1>
+    {% if current_user.is_admin %}
+    <div>
+      <a href="{{ url_for('exercise.import_exercises') }}" class="btn btn-outline-info me-2">
+        <i class="bi bi-upload"></i> Importar CSV
+      </a>
+      <a href="{{ url_for('exercise.add_exercise') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Añadir nuevo
+      </a>
+    </div>
+    {% endif %}
+  </div>
+  
+  <!-- Buscador -->
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-6">
+      <input type="text" name="q" value="{{ search_query }}" class="form-control"
+             placeholder="Buscar por nombre de ejercicio...">
+    </div>
+    <div class="col-md-4">
+      <select name="muscle" class="form-select">
+        <option value="">Todos los grupos musculares</option>
+        {% for muscle in muscle_groups %}
+          <option value="{{ muscle.name }}" {% if muscle_filter == muscle.name %}selected{% endif %}>
+            {{ muscle.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-outline-primary">
+        <i class="bi bi-search"></i> Buscar
+      </button>
+    </div>
+  </form>
+
+  <!-- Acordeón de grupos musculares -->
+  <div class="accordion" id="accordionMuscles">
+    {% for muscle_name, exercises in exercises_groups.items() %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-{{ loop.index }}">
+          <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#collapse-{{ loop.index }}"
+                  aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse-{{ loop.index }}">
+            {{ muscle_name }}
+          </button>
+        </h2>
+        <div id="collapse-{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+             aria-labelledby="heading-{{ loop.index }}" data-bs-parent="#accordionMuscles">
+          <div class="accordion-body">
+
+            <div class="row">
+              {% for exercise in exercises.items %}
+                <div class="col-md-4 mb-3">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                      <h5 class="card-title">{{ exercise.name }}</h5>
+                      <p class="card-text text-truncate">{{ exercise.description }}</p>
+
+                      <div class="mt-auto">
+                        <a href="{{ url_for('exercise.detail_exercise', exercise_id=exercise.exercise_id) }}" class="btn btn-sm btn-outline-primary me-2">
+                          <i class="bi bi-eye"></i> Ver
+                        </a>
+                        {% if current_user.is_admin %}
+                          <a href="{{ url_for('exercise.edit_exercise', exercise_id=exercise.exercise_id) }}" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="bi bi-pencil"></i> Editar
+                          </a>
+                          <a href="#"
+                            class="btn btn-sm btn-outline-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal"
+                            data-bs-url="{{ url_for('exercise.delete_exercise', exercise_id=exercise.exercise_id) }}"
+                            data-bs-name="el ejercicio '{{ exercise.name }}'">
+                            <i class="bi bi-trash"></i> Borrar
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <p class="text-muted">No hay ejercicios para este grupo muscular.</p>
+              {% endfor %}
+            </div>
+
+            <!-- Paginación -->
+            {% if exercises.pages > 1 %}
+              <nav aria-label="Paginación" class="mt-3">
+                <ul class="pagination justify-content-center">
+                  {% if exercises.has_prev %}
+                    <li class="page-item">
+                      <a class="page-link"
+                         href="{{ url_for('exercise.view_exercises',
+                                           page=exercises.prev_num,
+                                           q=search_query,
+                                           muscle=muscle_filter) }}">
+                        Anterior
+                      </a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+                  {% endif %}
+
+                  <li class="page-item disabled">
+                    <span class="page-link">Página {{ exercises.page }} de {{ exercises.pages }}</span>
+                  </li>
+
+                  {% if exercises.has_next %}
+                    <li class="page-item">
+                      <a class="page-link"
+                         href="{{ url_for('exercise.view_exercises',
+                                           page=exercises.next_num,
+                                           q=search_query,
+                                           muscle=muscle_filter) }}">
+                        Siguiente
+                      </a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+                  {% endif %}
+                </ul>
+              </nav>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
